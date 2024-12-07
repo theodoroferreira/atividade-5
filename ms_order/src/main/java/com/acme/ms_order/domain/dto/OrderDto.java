@@ -19,5 +19,4 @@ public class OrderDto {
     @CPF
     private String cpf;
     private List<ItemDto> items;
-    private BigDecimal totalValue;
 }

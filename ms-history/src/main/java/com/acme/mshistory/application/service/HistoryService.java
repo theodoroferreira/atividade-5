@@ -14,9 +14,9 @@ public class HistoryService {
 
     private final HistoryRepository repository;
 
-    public History save(History request) {
+    public void save(History request) {
         request.setEventDate(LocalDate.now());
-        return repository.save(request);
+        repository.save(request);
     }
 
     public List<History> findAll() {

@@ -21,8 +21,6 @@ spring:
       database: history_db
       port: 27017
       host: localhost
-      username: mongo
-      password: root
 
 springdoc:
   api-docs:
