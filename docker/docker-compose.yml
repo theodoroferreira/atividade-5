@@ -1,0 +1,124 @@
+version: '3.8'
+services:
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8085:8082
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
+      ME_CONFIG_MONGODB_PORT: 27017
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: root
+      ME_CONFIG_MONGODB_SERVER: mongodb
+    depends_on:
+      - mongodb
+    networks:
+      - shared-network
+    restart: always
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb:/data/db
+    networks:
+      - shared-network
+    restart: always
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest
+    networks:
+      - shared-network
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    networks:
+      - shared-network
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo > /dev/tcp/kafka/9092" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafdrop:
+    image: obsidiandynamics/kafdrop:latest
+    depends_on:
+      - kafka
+    ports:
+      - 19000:9000
+    networks:
+      - shared-network
+    environment:
+      KAFKA_BROKERCONNECT: kafka:29092
+
+  order-db:
+    image: postgres:latest
+    container_name: order_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: order_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+    networks:
+      - shared-network
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ms-order:
+    build:
+      context: ../ms-order
+    ports:
+      - "8081:8081"
+    depends_on:
+      order-db:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+    networks:
+      - shared-network
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+  ms-history:
+    build:
+      context: ../ms-history
+    ports:
+      - "8082:8082"
+    depends_on:
+      - mongodb
+      - kafka
+    networks:
+      - shared-network
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+
+volumes:
+  mongodb:
+  order-db-data:
+
+networks:
+  shared-network:
+    driver: bridge

@@ -5,7 +5,6 @@
     <option name="linkedExternalProjectsSettings">
       <GradleProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/ms-history" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/ms-history" />
@@ -13,11 +12,10 @@
         </option>
       </GradleProjectSettings>
       <GradleProjectSettings>
-        <option name="externalProjectPath" value="$PROJECT_DIR$/ms_order" />
-        <option name="gradleJvm" value="#JAVA_HOME" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/ms-order" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$/ms_order" />
+            <option value="$PROJECT_DIR$/ms-order" />
           </set>
         </option>
       </GradleProjectSettings>

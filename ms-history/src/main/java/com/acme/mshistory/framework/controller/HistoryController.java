@@ -1,7 +1,7 @@
 package com.acme.mshistory.framework.controller;
 
 import com.acme.mshistory.application.service.HistoryService;
-import com.acme.mshistory.domain.model.History;
+import com.acme.mshistory.domain.dto.HistoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,7 @@ public class HistoryController {
     private final HistoryService service;
 
     @GetMapping
-    public ResponseEntity<List<History>> findAll() {
+    public ResponseEntity<List<HistoryDto>> findAll() {
         return ResponseEntity.status(HttpStatus.OK).body(service.findAll());
     }
 }

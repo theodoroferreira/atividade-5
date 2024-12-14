@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/atividade-5.iml" filepath="$PROJECT_DIR$/.idea/atividade-5.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/ms-history.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ms-history.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ms_order.main.iml" filepath="$PROJECT_DIR$/.idea/modules/ms_order.main.iml" />
     </modules>
   </component>
 </project>
